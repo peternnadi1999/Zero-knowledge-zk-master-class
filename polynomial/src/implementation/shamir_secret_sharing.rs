@@ -25,7 +25,7 @@ shares
 }
 
 
-fn recover_secret<F: PrimeField>() {
+fn recover_secret<F: PrimeField>(shares: Vec<F>, threshold: u64 ) {
     todo!()
 }
 
@@ -33,10 +33,21 @@ fn recover_secret<F: PrimeField>() {
 #[cfg(test)]
 
 mod tests {
+    use ark_bn254::Fq;
     use super::*;
 
     #[test]
     fn test_create_secret(){
-       todo!()
+       let secret = 10;
+       let threshold = 3;
+       let total_share = 5;
+       let shares = create_secret(Fq::from(secret), threshold, total_share);
+       println!("{:?}", shares);
+       assert_eq!(shares.len(), total_share as usize);
+    }
+
+    fn test_ecover_secret(){
+        todo!()
+
     }
 }

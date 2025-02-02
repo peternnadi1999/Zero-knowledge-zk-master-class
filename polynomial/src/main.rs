@@ -23,7 +23,7 @@
 //     }
 // }
 
-use polynomial::implementation::shamir_secret_sharing;
+use polynomial::univariant_poly::shamir_secret_sharing;
 use ark_bn254::Fq;
 fn main() {
     shamir_secret_sharing::create_secret(Fq::from(4),4,10);

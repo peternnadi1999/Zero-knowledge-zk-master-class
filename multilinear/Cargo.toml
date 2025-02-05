@@ -1,0 +1,11 @@
+[package]
+name = "multilinear"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ark-bn254 = "0.5.0"
+ark-ff = "0.5.0"
+ark-std = "0.5.0"
+sha3 = "0.10.8"
+field-tracker = { git = "https://github.com/sublinearlabs/field-tracker"}

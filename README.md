@@ -1,1 +1,1 @@
-# Zero-knowledge-zk-master-class
+# ZK-Research

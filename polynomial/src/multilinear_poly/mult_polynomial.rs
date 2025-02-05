@@ -3,11 +3,11 @@ use ark_ff::PrimeField;
 #[derive(Clone)]
 pub struct MultilinearPoly<F: PrimeField> {
     pub evaluated_value: Vec<F>,
-    num_vars: u32,
+    pub num_vars: usize,
 }
 
 impl<F: PrimeField> MultilinearPoly<F> {
-    pub fn new(evaluate: Vec<F>, num_vars: u32) -> Result<Self, &'static str> {
+    pub fn new(evaluate: Vec<F>, num_vars: usize) -> Result<Self, &'static str> {
         if num_vars == 0 {
             return Err("Number of variables must be greater than 0");
         }
@@ -21,11 +21,11 @@ impl<F: PrimeField> MultilinearPoly<F> {
         })
     }
 
-    fn partial_evaluate(
+    pub fn partial_evaluate(
         &self,
-        fixed_var_value: F, // the value of a,b,c. a=4, b=1, c=2
-        fixed_var_index: u32 //0,1,2 for 3 variables and  0,1 for 2 variables
-    ) -> Vec<F> {
+        fixed_var_index: usize, //0,1,2 for 3 variables and  0,1 for 2 variables
+        fixed_var_value: F // the value of a,b,c. a=4, b=1, c=2
+    ) -> Self {
         // Ensure fixed_var_index is valid
         if fixed_var_index >= self.num_vars {
             panic!("fixed_var_index is out of bounds");
@@ -60,7 +60,7 @@ impl<F: PrimeField> MultilinearPoly<F> {
             let y2 = self.evaluated_value[original_index_1];
             result[i as usize] = y1 + fixed_var_value * (y2 - y1);
         }
-        result
+        Self{num_vars: self.num_vars - 1, evaluated_value: result}
     }
     
 
@@ -72,7 +72,7 @@ impl<F: PrimeField> MultilinearPoly<F> {
         let mut poly = self.clone();
 
         for i in assignment{
-            poly.evaluated_value = poly.partial_evaluate(*i, 0 );
+            poly.evaluated_value = poly.partial_evaluate(0, *i ).evaluated_value;
             poly.num_vars -= 1;
         }
         Ok(poly.evaluated_value[0])
@@ -101,7 +101,7 @@ mod tests {
         let polynomial = MultilinearPoly::new(evaluated_value.clone(), 3).expect(
             "Failed to create MultilinearPoly"
         );
-        let result = polynomial.partial_evaluate(fixed_var_value, fixed_var_index);
+        let result = polynomial.partial_evaluate(fixed_var_index, fixed_var_value).evaluated_value;
         assert_eq!(result, vec![Fq::from(0), Fq::from(3), Fq::from(2), Fq::from(5)]);
     }
 

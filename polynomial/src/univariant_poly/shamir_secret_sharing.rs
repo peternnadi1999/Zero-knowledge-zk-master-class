@@ -59,7 +59,7 @@ mod tests {
         assert_eq!(shares.len(), total_share as usize);
     }
 
-    fn test_ecover_secret() {
-        todo!()
+    fn test_recover_secret() {
+        todo!();
     }
 }

@@ -1,6 +1,6 @@
 use ark_ff::PrimeField;
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MultilinearPoly<F: PrimeField> {
     pub evaluated_value: Vec<F>,
     pub num_vars: usize,

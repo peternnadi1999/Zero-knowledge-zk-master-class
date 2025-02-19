@@ -37,10 +37,10 @@ impl Gate {
     }
 
     fn evaluate<F: PrimeField>(&mut self, inputs: &Vec<F>, outputs: &mut Vec<F>) {
-        let left_input = inputs[self.left_index];
-        let right_input = inputs[self.right_index];
+        let left_input = inputs[self.left_index]; // Get the left input from the inputs vector
+        let right_input = inputs[self.right_index]; // Get the right input from the inputs vector
 
-        let output = match self.opt {
+        let output = match self.opt { // Evaluate the gate based on the operation
             Opt::Add => left_input + right_input,
             Opt::Mul => left_input * right_input,
         };
@@ -54,10 +54,10 @@ impl Layer {
     }
 
     fn evaluate<F: PrimeField>(&mut self, inputs: &Vec<F>) -> Vec<F> {
-        let mut outputs = vec![F::zero(); self.gates.len()];
-        for gate in &mut self.gates {
-            gate.evaluate(inputs, &mut outputs);
-        }
+        let mut outputs = vec![F::zero(); self.gates.len()]; // Initialize the outputs vector with zeros
+        for gate in &mut self.gates { 
+            gate.evaluate(inputs, &mut outputs); 
+        } 
 
         outputs
     }
@@ -66,53 +66,54 @@ impl Layer {
         self,
         layer_index: usize
     ) -> (MultilinearPoly<F>, MultilinearPoly<F>) {
-        let num_vars = self.get_num_var(layer_index);
+        let num_vars = self.get_num_var(layer_index); // Get the number of variables in the layer
         let num_points = 1 << num_vars; // 2^num_vars
 
-        let mut add_i = vec![F::zero(); num_points];
-        let mut mul_i = vec![F::zero(); num_points];
+        let mut add_i = vec![F::zero(); num_points]; // Initailize the mul_i and add_i vectors with zeros
+        let mut mul_i = vec![F::zero(); num_points]; 
         dbg!(num_vars);
-        let width = layer_index + 1;
+        let width = layer_index + 1; // The width of the binary representation of the index
         for (i, gate) in self.gates.iter().enumerate() {
-            let output = format!("{:0width$b}", gate.output, width = layer_index);
-            let left_binary = format!("{:0width$b}", gate.left_index, width = width);
-            let right_binary = format!("{:0width$b}", gate.right_index, width = width);
+            let output = format!("{:0width$b}", gate.output, width = layer_index); // Convert the output index to a binary string
+            let left_binary = format!("{:0width$b}", gate.left_index, width = width); // Convert the left index to a binary string
+            let right_binary = format!("{:0width$b}", gate.right_index, width = width); // Convert the right index to a binary string
             dbg!(&output);
             // Concatenate the binary strings
             let concatenated = format!("{}{}{}", output, left_binary, right_binary);
-            let index = usize::from_str_radix(concatenated.as_str(), 2).unwrap();
+            let index = usize::from_str_radix(concatenated.as_str(), 2).unwrap(); // Convert the concatenated binary string to an index decimal number
             match gate.opt {
                 Opt::Add => {
-                    add_i[index] = F::one();
+                    add_i[index] = F::one(); // Set the corresponding index in the add_i vector to 1
                 }
                 Opt::Mul => {
-                    mul_i[index] = F::one();
+                    mul_i[index] = F::one(); // Set the corresponding index in the mul_i vector to 1
                 }
             }
 
-            dbg!(index);
-            dbg!(right_binary);
+            // dbg!(index);
+            // dbg!(right_binary);
         }
 
         let add_poly = MultilinearPoly::new(add_i.clone(), add_i.len().ilog2() as usize).expect(
             "error"
-        );
+        ); // Create a multilinear polynomial from the add_i vector
         let mul_poly = MultilinearPoly::new(add_i.clone(), add_i.len().ilog2() as usize).expect(
             "error"
-        );
+        ); // Create a multilinear polynomial from the mul_i vector
 
-        (add_poly, mul_poly)
+        (add_poly, mul_poly) // Return the add_poly and mul_poly
     }
 
+    // get the possible numbers of combinations for a given layer index
     fn get_num_var(&self, layer_index: usize) -> usize {
-        if layer_index == 0 {
+        if layer_index == 0 { // If the layer index is 0, return 3
             3
-        } else {
+        } else { 
             let variable_a = layer_index;
             let variable_b = layer_index + 1;
             let variable_c = layer_index + 1;
             variable_a + variable_b + variable_c
-        }
+        } 
     }
 }
 
@@ -134,6 +135,7 @@ impl<F: PrimeField> Circuit<F> {
         current_inputs
     }
 
+    // the w_i_poly is the evaluation at each layer of the circuit
     fn get_w_i_poly(mut self, layer_index: usize) -> MultilinearPoly<F> {
         if layer_index < self.layer_evals.len() - 1 {
             panic!("Number of variables must not be greater than the number of inputs");
@@ -145,7 +147,8 @@ impl<F: PrimeField> Circuit<F> {
             panic!("Number of variables must be greater than 0");
         }
         if self.layer_evals[layer_index].len() == 1 {
-            self.layer_evals[layer_index].push(F::zero());
+            // if the layer has only one input, then it is a constant layer
+            self.layer_evals[layer_index].push(F::zero()); // add a zero to the layer to make it a multilinear polynomial. because you can't have a multilinear polynomial with only one variable
             num_var = self.layer_evals[layer_index].len().ilog2() as usize;
         }
 
@@ -153,17 +156,25 @@ impl<F: PrimeField> Circuit<F> {
             "msg: failed to create multilinear polynomial"
         )
     }
+
+    fn w_b_c_poly(mut self, layer_index: usize) -> MultilinearPoly<F> {
+        let  layer_index_b = layer_index + 1;
+        let mut num_var = self.layer_evals[layer_index_b].len().ilog2() as usize;
+        let w_i  = self.layer_evals[layer_index_b].clone();
+
+
+        todo!()
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::process::Output;
 
     use ark_bn254::Fq;
     use super::*;
 
     #[test]
-    fn test_gate(){
+    fn test_gate() {
         let mut gate = Gate::new(0, 0, 1, Opt::Add);
         assert_eq!(gate.right_index, 1);
         assert_eq!(gate.output, 0);
@@ -174,9 +185,9 @@ mod tests {
     #[test]
     fn test_gate_evaluation() {
         let mut gate = Gate::new(0, 0, 1, Opt::Add);
-       
+
         let inputs = &vec![Fq::from(2), Fq::from(3)];
-        let mut output =vec![Fq::from(0); 2];
+        let mut output = vec![Fq::from(0); 2];
         gate.evaluate(inputs, &mut output);
         assert_eq!(output[0], Fq::from(5));
     }
@@ -278,21 +289,24 @@ mod tests {
     fn test_get_add_i_and_mul_i() {
         let gates = vec![
             Gate::new(0, 0, 1, Opt::Add), // Uses output of the first gate and an external input
-            Gate::new(1, 2, 3, Opt::Add),
+            Gate::new(1, 2, 3, Opt::Add)
             // Gate::new(2, 4, 5, Opt::Add),
             // Gate::new(3, 6, 7, Opt::Mul),
-            
         ];
 
         let mut layer = Layer::new(gates);
-        layer.evaluate(&vec![Fq::from(1),
+        layer.evaluate(
+            &vec![
+                Fq::from(1),
                 Fq::from(2),
                 Fq::from(3),
                 Fq::from(4),
                 Fq::from(5),
                 Fq::from(6),
                 Fq::from(7),
-                Fq::from(8)]);
+                Fq::from(8)
+            ]
+        );
 
         layer.get_add_i_and_mul_i::<Fq>(1);
     }

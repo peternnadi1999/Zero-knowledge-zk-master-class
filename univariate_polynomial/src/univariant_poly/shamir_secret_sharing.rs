@@ -6,7 +6,7 @@ pub fn create_secret<F: PrimeField>(secret: F, threshold: u64, total_share: u64)
     let mut ys = vec![secret];
     let mut rng = rand::thread_rng();
     for _i in 0..threshold - 1 {
-        let y = F::from(rng.gen_range(1..4));
+        let y = F::from(rng.gen_range(1..100000));
         ys.push(y);
     }
 

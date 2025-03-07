@@ -1,0 +1,1 @@
+fn(Transcript, multilinear::multilinear_poly::mult_polynomial::MultilinearPoly<_>) -> (multilinear::multilinear_poly::mult_polynomial::MultilinearPoly<_>, _) {gkr::gkr::initial_protocol::<_>}

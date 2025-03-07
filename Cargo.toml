@@ -1,0 +1,4 @@
+[workspace]
+resolver = "2"
+
+members = [ "gkr", "multilinear", "kzg", "univariate_polynomial", "sumcheck_protocol"]

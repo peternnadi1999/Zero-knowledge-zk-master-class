@@ -1,2 +1,2 @@
 pub mod multilinear_poly;
-pub mod sumcheck_protocol;
+pub mod composed_poly;

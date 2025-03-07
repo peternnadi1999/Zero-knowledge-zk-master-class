@@ -3,7 +3,7 @@ use univariate_polynomial::univariant_poly::polynomial::UnivariatePoly;
 use ark_ff::{ BigInteger, PrimeField };
 use crate::sumcheck_protocol::transcript::Transcript;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GkrSumcheckProof<F: PrimeField> {
     pub proof_poly: Vec<UnivariatePoly<F>>,
     pub claimed_sum: F,
@@ -29,14 +29,14 @@ pub fn gkr_partial_prove<F: PrimeField>(
     let mut random_challenges = Vec::with_capacity(num_var);
     let mut proof_poly = Vec::new();
     
-    // transcript.append(&convert_claims_to_bytes(claimed_sum));
+    transcript.append(&convert_claims_to_bytes(claimed_sum));
 
     for _ in 0..num_var {
-        let degree = sum_polynomial.degree();
+        let degree = poly.degree();
         let mut results = Vec::with_capacity(degree + 1);
         
         for i in 0..degree + 1{
-            let partial_poly = sum_polynomial.partial_evaluate(0,F::from(i as u64));
+            let partial_poly = poly.partial_evaluate(0, F::from(i as u64));
 
             let sum: F = partial_poly.reduce().iter().sum();
             results.push(sum);

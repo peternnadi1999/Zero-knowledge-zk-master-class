@@ -1,4 +1,6 @@
+use std::ops::{Add, Mul};
 use ark_ff::PrimeField;
+
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct MultilinearPoly<F: PrimeField> {
@@ -76,6 +78,49 @@ impl<F: PrimeField> MultilinearPoly<F> {
             poly.num_vars -= 1;
         }
         Ok(poly.evaluated_value[0])
+    }
+
+    pub fn scale(&self, value: F) -> Self {
+        let result: Vec<F> = self.evaluated_value.iter().map(|eval| *eval * value).collect();
+
+        Self::new(result.clone(), result.len().ilog2() as usize).expect(
+            "Failed to create MultilinearPoly"
+        )
+    }
+}
+
+
+impl<F: PrimeField> Add for MultilinearPoly<F> {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        let result:Vec<F> = self
+            .evaluated_value
+            .iter()
+            .zip(other.evaluated_value.iter())
+            .map(|(a, b)| *a + *b)
+            .collect();
+
+        MultilinearPoly::new(result.clone(), result.len().ilog2() as usize).expect(
+            "Failed to create MultilinearPoly"
+        )
+    }
+}
+
+impl<F: PrimeField> Mul for MultilinearPoly<F> {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        let result:Vec<F> = self
+            .evaluated_value
+            .iter()
+            .zip(other.evaluated_value.iter())
+            .map(|(a, b)| *a * *b)
+            .collect();
+
+        MultilinearPoly::new(result.clone(), result.len().ilog2() as usize).expect(
+            "Failed to create MultilinearPoly"
+        )
     }
 }
 

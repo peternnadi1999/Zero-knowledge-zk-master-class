@@ -5,7 +5,7 @@ use ark_ff::PrimeField;
 #[derive(Debug, PartialEq, Clone)]
 pub struct  UnivariatePoly<F: PrimeField> {
     // 1 coefficient for each power of x
-    coefficient: Vec<F>,
+   pub  coefficient: Vec<F>,
 }
 
 impl <F: PrimeField> UnivariatePoly<F> {

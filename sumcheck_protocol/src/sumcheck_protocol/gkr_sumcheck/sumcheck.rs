@@ -140,19 +140,10 @@ mod test {
         let c = vec![Fq::from(0), Fq::from(0), Fq::from(0), Fq::from(2)];
         let d = vec![Fq::from(0), Fq::from(0), Fq::from(0), Fq::from(3)];
 
-        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-
-        let poly_3 = MultilinearPoly::new(c.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_4 = MultilinearPoly::new(d.clone(), c.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
+        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).unwrap();
+        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).unwrap();
+        let poly_3 = MultilinearPoly::new(c.clone(), b.len().ilog2() as usize).unwrap();
+        let poly_4 = MultilinearPoly::new(d.clone(), c.len().ilog2() as usize).unwrap();
 
         let product_poly1 = ProductPoly::new(vec![poly_1.clone(), poly_2.clone()]);
         let product_poly2 = ProductPoly::new(vec![poly_3.clone(), poly_4.clone()]);

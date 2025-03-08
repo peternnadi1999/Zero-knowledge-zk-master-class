@@ -54,7 +54,6 @@ impl<F: PrimeField> SumPoly<F> {
 
 #[cfg(test)]
 mod tests {
-    use std::iter::Product;
 
     use crate::multilinear_poly::mult_polynomial::MultilinearPoly;
 
@@ -69,19 +68,11 @@ mod tests {
         let c = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
         let d = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
 
-        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
+        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).unwrap();
+        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).unwrap();
 
-        let poly_3 = MultilinearPoly::new(c.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_4 = MultilinearPoly::new(d.clone(), c.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
+        let poly_3 = MultilinearPoly::new(c.clone(), b.len().ilog2() as usize).unwrap();
+        let poly_4 = MultilinearPoly::new(d.clone(), c.len().ilog2() as usize).unwrap();
 
         let product_poly1 = ProductPoly::new(vec![poly_1.clone(), poly_2.clone()]);
         let product_poly2 = ProductPoly::new(vec![poly_3.clone(), poly_4.clone()]);

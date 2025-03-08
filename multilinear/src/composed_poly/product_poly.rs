@@ -69,12 +69,8 @@ mod tests {
     fn test_product_poly() {
         let a = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
         let b = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
-        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
+        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).unwrap();
+        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).unwrap();
         let result = vec![poly_1, poly_2];
         let product_poly = ProductPoly::new(result);
         // assert!(product_poly);
@@ -84,12 +80,8 @@ mod tests {
     fn test_partial_evaluation(){
         let a = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
         let b = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
-        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
+        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).unwrap();
+        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).unwrap();
         let result = vec![poly_1, poly_2];
         let product_poly = ProductPoly::new(result);
         let partial_evaluate = product_poly.partial_evaluate(0, Fq::from(2));
@@ -100,12 +92,8 @@ mod tests {
     fn test_evaluation(){
         let a = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
         let b = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
-        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
+        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).unwrap();
+        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).unwrap();
         let result = vec![poly_1, poly_2];
         let product_poly = ProductPoly::new(result);
         let evaluate = product_poly.evaluate(vec![Fq::from(1), Fq::from(2)]);
@@ -116,12 +104,8 @@ mod tests {
     fn test_reduce(){
         let a = vec![Fq::from(0), Fq::from(3), Fq::from(2), Fq::from(5)];
         let b = vec![Fq::from(1), Fq::from(2), Fq::from(3), Fq::from(4)];
-        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
-        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).expect(
-            "failed to identify poly"
-        );
+        let poly_1 = MultilinearPoly::new(a.clone(), a.len().ilog2() as usize).unwrap();
+        let poly_2 = MultilinearPoly::new(b.clone(), b.len().ilog2() as usize).unwrap();
         let result = vec![poly_1, poly_2];
         let product_poly = ProductPoly::new(result);
        

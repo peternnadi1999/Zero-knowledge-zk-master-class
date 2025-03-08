@@ -100,13 +100,8 @@ impl Layer {
             }
         }
 
-        let add_poly = MultilinearPoly::new(add_i.clone(), add_i.len().ilog2() as usize).expect(
-            "Failed to create add_poly"
-        );
-        let mul_poly = MultilinearPoly::new(mul_i.clone(), mul_i.len().ilog2() as usize).expect(
-            "Failed to create mul_poly"
-        );
-
+        let add_poly = MultilinearPoly::new(add_i.clone(), add_i.len().ilog2() as usize).unwrap();
+        let mul_poly = MultilinearPoly::new(mul_i.clone(), mul_i.len().ilog2() as usize).unwrap();
         (add_poly, mul_poly)
     }
 }
@@ -147,9 +142,7 @@ impl<F: PrimeField> Circuit<F> {
         if num_var == 0 {
             panic!("Number of variables must be greater than 0");
         }
-        MultilinearPoly::new(self.layer_evals[layer_index].clone(), num_var).expect(
-            "msg: failed to create multilinear polynomial"
-        )
+        MultilinearPoly::new(self.layer_evals[layer_index].clone(), num_var).unwrap()
     }
 
     pub fn add_w_b_c_poly(self, layer_index: usize) -> MultilinearPoly<F> {
@@ -344,16 +337,12 @@ mod tests {
 
         assert_eq!(
             add_i,
-            MultilinearPoly::new(add_i_output.clone(), add_i_output.len().ilog2() as usize).expect(
-                "failed"
-            )
+            MultilinearPoly::new(add_i_output.clone(), add_i_output.len().ilog2() as usize).unwrap()
         );
 
         assert_eq!(
             mul_i,
-            MultilinearPoly::new(mul_i_output.clone(), mul_i_output.len().ilog2() as usize).expect(
-                "failed"
-            )
+            MultilinearPoly::new(mul_i_output.clone(), mul_i_output.len().ilog2() as usize).unwrap()
         );
     }
 }

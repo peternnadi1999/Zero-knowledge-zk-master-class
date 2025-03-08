@@ -129,7 +129,7 @@ mod test {
                 Fq::from(5)
             ],
             3
-        ).expect("expected");
+        ).unwrap();
         let proof = prove(&poly, Fq::from(20));
         dbg!(&proof);
         end_tscope!();

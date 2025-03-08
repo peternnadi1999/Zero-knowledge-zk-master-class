@@ -83,9 +83,7 @@ impl<F: PrimeField> MultilinearPoly<F> {
     pub fn scale(&self, value: F) -> Self {
         let result: Vec<F> = self.evaluated_value.iter().map(|eval| *eval * value).collect();
 
-        Self::new(result.clone(), result.len().ilog2() as usize).expect(
-            "Failed to create MultilinearPoly"
-        )
+        Self::new(result.clone(), result.len().ilog2() as usize).unwrap()
     }
 }
 
@@ -101,9 +99,7 @@ impl<F: PrimeField> Add for MultilinearPoly<F> {
             .map(|(a, b)| *a + *b)
             .collect();
 
-        MultilinearPoly::new(result.clone(), result.len().ilog2() as usize).expect(
-            "Failed to create MultilinearPoly"
-        )
+        MultilinearPoly::new(result.clone(), result.len().ilog2() as usize).unwrap()
     }
 }
 
@@ -118,9 +114,7 @@ impl<F: PrimeField> Mul for MultilinearPoly<F> {
             .map(|(a, b)| *a * *b)
             .collect();
 
-        MultilinearPoly::new(result.clone(), result.len().ilog2() as usize).expect(
-            "Failed to create MultilinearPoly"
-        )
+        MultilinearPoly::new(result.clone(), result.len().ilog2() as usize).unwrap()
     }
 }
 
@@ -143,9 +137,7 @@ mod tests {
         ];
         let fixed_var_index = 0;
         let fixed_var_value = Fq::from(1_u32);
-        let polynomial = MultilinearPoly::new(evaluated_value.clone(), 3).expect(
-            "Failed to create MultilinearPoly"
-        );
+        let polynomial = MultilinearPoly::new(evaluated_value.clone(), 3).unwrap();
         let result = polynomial.partial_evaluate(fixed_var_index, fixed_var_value).evaluated_value;
         assert_eq!(result, vec![Fq::from(0), Fq::from(3), Fq::from(2), Fq::from(5)]);
     }
@@ -162,11 +154,9 @@ mod tests {
             Fq::from(2),
             Fq::from(5)
         ];
-        let polynomial = MultilinearPoly::new(evaluated_value.clone(), 3).expect(
-            "Failed to create MultilinearPoly"
-        );
+        let polynomial = MultilinearPoly::new(evaluated_value.clone(), 3).unwrap();
         let assignment = vec![Fq::from(1_u32), Fq::from(1_u32), Fq::from(1_u32)];
-        let result = polynomial.evaluate_poly(&assignment).expect("Evaluation failed");
+        let result = polynomial.evaluate_poly(&assignment).unwrap();
         assert_eq!(result, Fq::from(5)); // Expected result based on the polynomial and assignment
     }
 }
